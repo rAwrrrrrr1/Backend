@@ -15,4 +15,9 @@ class Badminton extends Model
         'keterangan',
         'gambar',
     ];
+
+    public function bookingBadmintons()
+    {
+        return $this->hasMany(BookingBadminton::class, 'id_lapangan');
+    }
 }

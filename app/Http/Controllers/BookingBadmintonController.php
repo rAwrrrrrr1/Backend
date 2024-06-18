@@ -14,18 +14,26 @@ use Carbon\Carbon;
 
 class BookingBadmintonController extends Controller
 {
-    public function index($tanggal)
+    public function index(Request $request, $tanggal)
     {
+        $id_lapangan = $request->query('id_lapangan'); // Retrieve id_lapangan from query parameters
+
         try {
             $tanggal = Carbon::parse($tanggal);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Format tanggal tidak valid'], 400);
         }
 
-        $jadwalBadmintons = BookingBadminton::where('tanggal', $tanggal)
+        $query = BookingBadminton::where('tanggal', $tanggal)
+            ->with(['sesi', 'badminton']) // Eager load the related Sesi and Badminton data
             ->orderBy('id_lapangan')
-            ->orderBy('id_sesi')
-            ->get();
+            ->orderBy('id_sesi');
+
+        if ($id_lapangan) {
+            $query->where('id_lapangan', $id_lapangan);
+        }
+
+        $jadwalBadmintons = $query->get();
 
         if ($jadwalBadmintons->isEmpty()) {
             return response()->json(['message' => 'Jadwal Badminton tidak ditemukan'], 404);
@@ -88,7 +96,9 @@ class BookingBadmintonController extends Controller
 
     public function showBooking($id)
     {
+
         $bookingBadmintons = BookingBadminton::where('id_user', $id)
+            ->with('sesi')
             ->orderBy('tanggal')
             ->orderBy('id_sesi')
             ->get();
@@ -99,4 +109,8 @@ class BookingBadmintonController extends Controller
 
         return response()->json(['message' => 'Data Booking Badminton Berhasil Ditemukan', 'data' => $bookingBadmintons], 200);
     }
+
+    // $waktu_sesi = DB::table('booking_badmintons')
+    //         ->join('sesis', 'booking_badmintons.id_sesi', '=', 'sesi.id')
+    //         ->select('sesis.waktu'),
 }

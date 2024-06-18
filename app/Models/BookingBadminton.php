@@ -17,4 +17,14 @@ class BookingBadminton extends Model
         'id_user',
         'nama_penyewa',
     ];
+
+    public function badminton()
+    {
+        return $this->belongsTo(Badminton::class, 'id_lapangan');
+    }
+    
+    public function sesi()
+    {
+        return $this->belongsTo(Sesi::class, 'id_sesi');
+    }
 }

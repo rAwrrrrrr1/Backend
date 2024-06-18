@@ -31,6 +31,7 @@ class AuthController extends Controller
         $user = User::create($registrationData);
 
         return response([
+            'success' => true,
             'message' => 'Register Success',
             'user' => $user
         ], 200);

@@ -35,7 +35,12 @@ class BadmintonController extends Controller
         }
 
         $gambar = $request->file('gambar');
-        $gambarPath = $gambar->store('public/images');
+        
+        // Generate nama file yang terenkripsi
+        $encryptedFileName = hash('sha256', time()) . '.' . $gambar->getClientOriginalExtension();
+        
+        // Simpan file gambar dengan nama terenkripsi ke dalam direktori 'public/images'
+        $gambarPath = $gambar->storeAs('public/images', $encryptedFileName);
 
         $badminton = Badminton::create([
             'nama' => $request->input('nama'),
@@ -44,7 +49,7 @@ class BadmintonController extends Controller
             'gambar' => $gambarPath,
         ]);
 
-        return response()->json(['message' => 'Data Badminton berhasil disimpan', 'data' => $badminton], 200);
+        return response()->json(['success' => true, 'message' => 'Data Badminton berhasil disimpan', 'data' => $badminton], 200);
     }
 
     public function show($id)

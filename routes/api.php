@@ -51,7 +51,7 @@ Route::put('maintenance', 'SystemController@setMaintenance');
 Route::put('allowBooking', 'SystemController@setAllowBooking');
 
 //Jadwal
-Route::get('jadwalBadminton/{tanggal}', 'BookingBadmintonController@index');
+Route::get('jadwalBadminton/{tanggal}/{id}', 'BookingBadmintonController@index');
 Route::get('jadwalFutsal/{tanggal}', 'BookingFutsalController@index');
 Route::get('jadwalSoccer/{tanggal}', 'BookingSoccerController@index');
 

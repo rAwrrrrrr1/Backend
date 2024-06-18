@@ -12,4 +12,9 @@ class Sesi extends Model
     protected $fillable = [
         'waktu',
     ];
+
+    public function bookingBadmintons()
+    {
+        return $this->hasMany(BookingBadminton::class, 'id_sesi');
+    }
 }
