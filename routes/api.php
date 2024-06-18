@@ -43,12 +43,43 @@ Route::put('soccer/{id}', 'SoccerController@update');
 Route::delete('soccer/{id}', 'SoccerController@destroy');
 
 //System
+Route::get('generateNoBooking', 'SystemController@generateNoBooking');
 Route::post('generateJadwalThisMonth', 'SystemController@generateJadwalThisMonth');
 Route::post('generateJadwalNextMonth', 'SystemController@generateJadwalNextMonth');
 Route::delete('clearCache', 'SystemController@clearCache');
 Route::put('maintenance', 'SystemController@setMaintenance');
 Route::put('allowBooking', 'SystemController@setAllowBooking');
 
-Route::group(['middleware' => 'auth:api'], function(){
+//Jadwal
+Route::get('jadwalBadminton/{tanggal}', 'BookingBadmintonController@index');
+Route::get('jadwalFutsal/{tanggal}', 'BookingFutsalController@index');
+Route::get('jadwalSoccer/{tanggal}', 'BookingSoccerController@index');
+
+Route::group(['middleware' => 'auth:api'], function(){    
+    //User
+    Route::get('user', 'UserController@index');
+    Route::get('user/{id}', 'UserController@show');
+    Route::put('user/{id}', 'UserController@update');
+    Route::delete('user/{id}', 'UserController@destroy');
+
+    //Booking Badminton
+    Route::get('showBookingBadminton/{id}', 'BookingBadmintonController@showBooking');
+    Route::put('addBookingBadminton/{id}', 'BookingBadmintonController@addBooking');
+    Route::put('cancelBookingBadminton/{id}', 'BookingBadmintonController@cancelBooking');
     
+    //Booking Futsal
+    Route::get('showBookingFutsal/{id}', 'BookingFutsalController@showBooking');
+    Route::put('addBookingFutsal/{id}', 'BookingFutsalController@addBooking');
+    Route::put('cancelBookingFutsal/{id}', 'BookingFutsalController@cancelBooking');
+    
+    //Booking Soccer
+    Route::get('showBookingSoccer/{id}', 'BookingSoccerController@showBooking');
+    Route::put('addBookingSoccer/{id}', 'BookingSoccerController@addBooking');
+    Route::put('cancelBookingSoccer/{id}', 'BookingSoccerController@cancelBooking');
+
+    //Transaksi
+    Route::get('transaksi', 'TransaksiController@index');
+    Route::get('transaksi/user/{id}', 'TransaksiController@indexByUser');
+    Route::get('transaksi/{id}', 'TransaksiController@show');
+    Route::post('transaksi', 'TransaksiController@store');
 });

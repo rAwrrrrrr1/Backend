@@ -18,7 +18,19 @@ use Carbon\Carbon;
 
 class SystemController extends Controller
 {
-    
+    public function generateNoBooking()
+    {
+        $no_booking = mt_rand(100000, 999999);
+        $no_booking_badminton = BookingBadminton::where('no_booking', $no_booking)->exists();
+        $no_booking_futsal = BookingFutsal::where('no_booking', $no_booking)->exists();
+        $no_booking_soccer = BookingSoccer::where('no_booking', $no_booking)->exists();
+
+        if ($no_booking_badminton || $no_booking_futsal || $no_booking_soccer) {
+            return $this->generateNoBooking();
+        }
+        
+        return response()->json(['no_booking' => $no_booking], 200);
+    }
 
     public function generateJadwalThisMonth()
     {
