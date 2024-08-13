@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::post('login', 'AuthController@login');
 Route::post('logout', 'AuthController@logout');
 Route::post('register', 'AuthController@register');
+Route::get('users', 'AuthController@listUsers');
 
 //Badminton
 Route::get('badminton', 'BadmintonController@index');
@@ -51,7 +52,7 @@ Route::put('maintenance', 'SystemController@setMaintenance');
 Route::put('allowBooking', 'SystemController@setAllowBooking');
 
 //Jadwal
-Route::get('jadwalBadminton/{tanggal}/{id}', 'BookingBadmintonController@index');
+Route::get('jadwalBadminton/{tanggal}', 'BookingBadmintonController@index');
 Route::get('jadwalFutsal/{tanggal}', 'BookingFutsalController@index');
 Route::get('jadwalSoccer/{tanggal}', 'BookingSoccerController@index');
 

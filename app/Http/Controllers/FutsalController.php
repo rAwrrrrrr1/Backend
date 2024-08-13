@@ -27,7 +27,7 @@ class FutsalController extends Controller
             'nama' => 'required|string',
             'keterangan' => 'required|string',
             'harga' => 'required|numeric',
-            'gambar' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            'gambar' => 'image|mimes:jpeg,png,jpg,gif|max:10240',
         ]);
 
         if ($validator->fails()) {
@@ -64,7 +64,7 @@ class FutsalController extends Controller
             'nama' => 'required|string',
             'keterangan' => 'required|string',
             'harga' => 'required|numeric',
-            'gambar' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            // 'gambar' => 'image|mimes:jpeg,png,jpg,gif|max:10240',
         ]);
 
         if ($validator->fails()) {
@@ -82,13 +82,13 @@ class FutsalController extends Controller
         $futsal->harga = $request->input('harga');
 
         
-        if ($request->hasFile('gambar')) {
-            Storage::delete($futsal->gambar);
+        // if ($request->hasFile('gambar')) {
+        //     Storage::delete($futsal->gambar);
             
-            $gambar = $request->file('gambar');
-            $gambarPath = $gambar->store('public/images');
-            $futsal->gambar = $gambarPath;
-        }
+        //     $gambar = $request->file('gambar');
+        //     $gambarPath = $gambar->store('public/images');
+        //     $futsal->gambar = $gambarPath;
+        // }
 
         $futsal->save();
 

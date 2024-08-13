@@ -69,4 +69,14 @@ class AuthController extends Controller
             'message'=>'Logout Success'
         ],200);
     }
+
+    public function listUsers()
+    {
+        $users = User::all();
+        return response()->json([
+            'success' => true,
+            'message' => 'User List Retrieved',
+            'users' => $users
+        ], 200);
+    }
 }
