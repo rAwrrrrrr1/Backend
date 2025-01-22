@@ -110,7 +110,7 @@ class SystemController extends Controller
         $soccers = Soccer::all();
         $bulanIni = Carbon::now()->startOfMonth();
         $bulanDepan = $bulanIni->copy()->addMonth()->startOfMonth();
-        $batasAkhir = $bulanDepan->copy()->addMonth()->startOfMonth(); // Add this line
+        $batasAkhir = $bulanDepan->copy()->addMonth()->startOfMonth();
 
         for ($tanggal = $bulanDepan; $tanggal->lt($batasAkhir); $tanggal->addDay()) {
             foreach ($sesis as $sesi) {
@@ -196,6 +196,14 @@ class SystemController extends Controller
         return response()->json(['message' => 'Data Booking yang Expired berhasil dihapus'], 200);
     }
 
+    public function getStatusMaintenance()
+    {
+        $maintenance = System::where('keterangan', 'is_maintenance')->first();
+        $status = $maintenance->status;
+        
+        return response()->json(['status' => $status], 200);
+    }
+
     public function setMaintenance(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -217,6 +225,14 @@ class SystemController extends Controller
         $system->save();
 
         return response()->json(['message' => 'Sukses'], 200);
+    }
+
+    public function getStatusAllowBooking()
+    {
+        $maintenance = System::where('keterangan', 'is_not_allow_booking')->first();
+        $status = $maintenance->status;
+        
+        return response()->json(['status' => $status], 200);
     }
     
     public function setAllowBooking(Request $request)

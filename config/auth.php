@@ -40,7 +40,14 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'api' => [
+            'driver' => 'passport',  // You can also use 'jwt' or 'passport' depending on your setup
+            'provider' => 'users',
+            'hash' => true,  // Set to true if you want hashed tokens
+        ],
     ],
+
 
     /*
     |--------------------------------------------------------------------------

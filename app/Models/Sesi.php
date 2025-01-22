@@ -13,8 +13,15 @@ class Sesi extends Model
         'waktu',
     ];
 
-    public function bookingBadmintons()
-    {
+    public function bookingBadmintons(){
         return $this->hasMany(BookingBadminton::class, 'id_sesi');
+    }
+
+    public function bookingFutsals(){
+        return $this->hasMany(BookingFutsal::class, 'id_sesi');
+    }
+
+    public function bookingSoccers(){
+        return $this->hasMany(BookingSoccer::class, 'id_sesi');
     }
 }

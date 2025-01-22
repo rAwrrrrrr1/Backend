@@ -17,4 +17,14 @@ class BookingSoccer extends Model
         'id_user',
         'nama_penyewa',
     ];
+
+    public function soccer()
+    {
+        return $this->belongsTo(Soccer::class, 'id_lapangan');
+    }
+    
+    public function sesi()
+    {
+        return $this->belongsTo(Sesi::class, 'id_sesi');
+    }
 }

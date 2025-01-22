@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Badminton;
 use App\Models\Sesi;
+use App\Models\Transaksi;
 use App\Models\BookingBadminton;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -47,6 +48,7 @@ class BookingBadmintonController extends Controller
         $validator = Validator::make($request->all(), [
             'id_user' => 'required|numeric',
             'nama_penyewa' => 'required|string',
+            'no_booking' => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -66,8 +68,29 @@ class BookingBadmintonController extends Controller
         $bookingBadminton->status = 'booked';
         $bookingBadminton->id_user = $request->input('id_user');
         $bookingBadminton->nama_penyewa = $request->input('nama_penyewa');
+        $bookingBadminton->no_booking = $request->input('no_booking');
 
         $bookingBadminton->save();
+
+        $badminton = Badminton::where('id', $bookingBadminton->id_lapangan)->first();
+        if (!$badminton) {
+            return response()->json(['message' => 'Lapangan tidak ditemukan'], 404);
+        }
+        $harga = $badminton->harga;
+
+        $transaksi = Transaksi::where('no_booking_badminton', $request->input('no_booking'))->first();
+
+        if (!$transaksi) {
+            $transaksi = new Transaksi();
+            $transaksi->status_pembayaran = 'Belum Dibayar';
+            $transaksi->no_booking_badminton = $request->input('no_booking');
+            $transaksi->id_user = $request->input('id_user');
+            $transaksi->total_pembayaran = $harga;
+        } else {
+            $transaksi->total_pembayaran += $harga;
+        }
+
+        $transaksi->save();
 
         return response()->json(['message' => 'Data Booking Badminton berhasil ditambah', 'data' => $bookingBadminton], 200);
     }
@@ -80,14 +103,10 @@ class BookingBadmintonController extends Controller
             return response()->json(['message' => 'Data Badminton tidak ditemukan'], 404);
         }
         
-        $loggedInUserId = Auth::id();
-        if ($bookingBadminton->id_user !== $loggedInUserId) {
-            return response()->json(['message' => 'Anda tidak memiliki izin untuk membatalkan booking ini'], 403);
-        }
-        
         $bookingBadminton->status = 'kosong';
         $bookingBadminton->id_user = null;
         $bookingBadminton->nama_penyewa = null;
+        $bookingBadminton->no_booking = null;
 
         $bookingBadminton->save();
 
@@ -110,7 +129,24 @@ class BookingBadmintonController extends Controller
         return response()->json(['message' => 'Data Booking Badminton Berhasil Ditemukan', 'data' => $bookingBadmintons], 200);
     }
 
-    // $waktu_sesi = DB::table('booking_badmintons')
-    //         ->join('sesis', 'booking_badmintons.id_sesi', '=', 'sesi.id')
-    //         ->select('sesis.waktu'),
+    public function detailBooking($id)
+    {
+
+        $bookingBadminton = BookingBadminton::where('id', $id)->first();
+
+        if (!$bookingBadminton) {
+            return response()->json(['message' => 'Data Booking Badminton tidak ditemukan'], 404);
+        }
+
+        $transaksi = Transaksi::where('no_booking_badminton', $bookingBadminton->no_booking)->first();
+
+        return response()->json(
+            [
+                'message' => 'Data Booking Badminton Berhasil Ditemukan', 
+                'dataBooking' => $bookingBadminton,
+                'dataTransaksi' => $transaksi
+            ],
+            200
+        );
+    }
 }

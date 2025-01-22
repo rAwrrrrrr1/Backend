@@ -32,14 +32,15 @@ class UserController extends Controller
         return response()->json(['data' => $user], 200);
     }
 
-    public function update(Request $request, $id)
+   public function update(Request $request, $id)
     {
+
         $validate = Validator::make($request->all(), [
             'password' => ['required'],
         ]);
 
         if ($validate->fails()) {
-            return response(['message' => $validate->errors()], 400);
+            return response()->json(['message' => $validate->errors()], 400);
         }
 
         $user = User::find($id);
@@ -47,7 +48,7 @@ class UserController extends Controller
         if (!$user) {
             return response()->json(['message' => 'Data User tidak ditemukan'], 404);
         }
-
+        
         $user->password = bcrypt($request->password);
 
         try {
@@ -56,8 +57,38 @@ class UserController extends Controller
             return response()->json(['message' => 'Gagal Mengganti Password', 'error' => $e->getMessage()], 500);
         }
 
-        return response()->json(['message' => 'Berhasil Mengganti Password', 'data' => $user], 200);
+        return response()->json(['message' => 'Berhasil Mengganti Password'], 200);
     }
+
+
+    public function updateUser(Request $request, $id)
+    {
+        $user = User::find($id);
+        if (!$user) {
+            return response(['message' => 'User not found'], 404);
+        }
+
+        $updateData = $request->only(['email', 'nama', 'telepon']);
+    
+        $validate = Validator::make($updateData, [
+            'email' => 'sometimes|email:rfc,dns|unique:users,email,' . $user->id,
+            'nama' => 'sometimes|string',
+            'telepon' => 'sometimes|regex:/^08[0-9]/',
+        ]);
+    
+        if ($validate->fails()) {
+            return response(['message' => $validate->errors()], 400);
+        }
+    
+        $user->update($updateData);
+    
+        return response([
+            'success' => true,
+            'message' => 'User updated successfully',
+            'user' => $user
+        ], 200);
+    }
+    
 
     public function destroy($id)
     {

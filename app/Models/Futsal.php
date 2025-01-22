@@ -15,4 +15,9 @@ class Futsal extends Model
         'keterangan',
         'gambar',
     ];
+
+    public function bookingFutsals()
+    {
+        return $this->hasMany(BookingFutsal::class, 'id_lapangan');
+    }
 }

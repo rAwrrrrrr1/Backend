@@ -49,7 +49,7 @@ class BadmintonController extends Controller
             'gambar' => $gambarPath,
         ]);
 
-        return response()->json(['success' => true, 'message' => 'Data Badminton berhasil disimpan', 'data' => $badminton], 200);
+        return response()->json(['success' => true, 'message' => 'Data Badminton berhasil disimpan', 'data' => $badminton]);
     }
 
     public function show($id)
@@ -69,7 +69,7 @@ class BadmintonController extends Controller
             'nama' => 'required|string',
             'keterangan' => 'required|string',
             'harga' => 'required|numeric',
-            // 'gambar' => 'image|mimes:jpeg,png,jpg,gif|max:10240',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
         ]);
 
         if ($validator->fails()) {
@@ -87,13 +87,13 @@ class BadmintonController extends Controller
         $badminton->harga = $request->input('harga');
 
         
-        // if ($request->hasFile('gambar')) {
-        //     Storage::delete($badminton->gambar);
+        if ($request->hasFile('gambar')) {
+            Storage::delete($badminton->gambar);
             
-        //     $gambar = $request->file('gambar');
-        //     $gambarPath = $gambar->store('public/images');
-        //     $badminton->gambar = $gambarPath;
-        // }
+            $gambar = $request->file('gambar');
+            $gambarPath = $gambar->store('public/images');
+            $badminton->gambar = $gambarPath;
+        }
 
         $badminton->save();
 

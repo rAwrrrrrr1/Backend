@@ -16,6 +16,8 @@ class Transaksi extends Model
         'no_booking_futsal',
         'no_booking_soccer',
         'id_user',
-        'total_pembayaran'
+        'total_pembayaran',
+        'bukti_pembayaran',
     ];
+    
 }

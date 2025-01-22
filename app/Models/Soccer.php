@@ -15,4 +15,9 @@ class Soccer extends Model
         'keterangan',
         'gambar',
     ];
+
+    public function bookingSoccers()
+    {
+        return $this->hasMany(BookingSoccer::class, 'id_lapangan');
+    }
 }
